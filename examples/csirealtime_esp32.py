@@ -32,7 +32,14 @@ class GetDataThread(threading.Thread):
         csidata = csiread.ESP32(None, False)
         global cache_data, mutex
         while True:
-            data = sys.stdin.readline().strip('\n')
+            # for use with the ESP32-CSI-Tool
+            line = sys.stdin.readline()
+            if "CSI_DATA" not in line:
+                if line != "":
+                    print(line)
+                else:
+                    break
+            data = line.strip('\n')
             code = csidata.pmsg(data)
             if code == 0xf200:
                 mutex.acquire()
